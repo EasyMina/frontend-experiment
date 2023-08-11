@@ -1,4 +1,4 @@
-# EasyMina Frontend Experiment
+# Frontend Experiment
 
 Welcome to an experimental bare-bone server designed for creating zero-knowledge proofs in a web browser. Prior to proceeding, please ensure that `snarkyjs` is compressed during the build process.
 
