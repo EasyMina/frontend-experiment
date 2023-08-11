@@ -23,89 +23,6 @@
 
 
     <script>
-        async function  main() {
-/*
-            const loading = new Loading()
-            await loading.init()
-
-            console.log( 'Import Snarkyjs' )
-            var { snarkyjs } = await import( loading.state['blob']['snarkyjs'] )
-
-
-            console.log( 'SmartContract' )
-
-            var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-                var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-                if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-                else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-                return c > 3 && r && Object.defineProperty(target, key, r), r;
-            };
-            var __metadata = (this && this.__metadata) || function (k, v) {
-                if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-            };
-            const { Field, SmartContract, state, State, method } = snarkyjs
-            class Square extends SmartContract {
-                constructor() {
-                    super(...arguments);
-                    this.num = State();
-                }
-                init() {
-                    super.init();
-                    this.num.set(Field(3));
-                }
-                update(square) {
-                    const currentState = this.num.get();
-                    this.num.assertEquals(currentState);
-                    square.assertEquals(currentState.mul(currentState));
-                    this.num.set(square);
-                }
-            }
-            __decorate([
-                state(Field),
-                __metadata("design:type", Object)
-            ], Square.prototype, "num", void 0);
-            __decorate([
-                method,
-                __metadata("design:type", Function),
-                __metadata("design:paramtypes", [Field]),
-                __metadata("design:returntype", void 0)
-            ], Square.prototype, "update", null);
-
- 
-                console.log( 'Import SmartContract' )
-                const response = await fetch( loading.state['blob']['smartContract'] )
-                const blobData = await response.blob()
-
-                const reader = new FileReader()
-                const blobContent = await new Promise((resolve, reject) => {
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = reject;
-                    reader.readAsText(blobData); // You can also use readAsDataURL(blobData) for a data URL
-                });
-                
-                const newBlobURL = 'blob:http://localhost:3000/edc2b832-1e6c-4b2e-9a0a-9297e0ac0adc';
-                const modifiedContent = blobContent.replace('{{snarkyjs_blob}}', loading.state['blob']['snarkyjs'] )
-
-                // Create a new Blob with the modified content
-                const modifiedBlob = new Blob([modifiedContent], { type: 'application/javascript' });
-                // Create a Blob URL for the modified Blob
-                const modifiedBlobURL = URL.createObjectURL(modifiedBlob);
-       
-
-            console.log( 'HERE >>> Compile')
-            // await Square.compile()
-            // const zk = new Square()
-            
-            console.log( 'READY')
-*/
-        }
-
-/*
-    main()
-        .then( a => console.log( a ) )
-        .catch( e => console.log( e ) )
-*/
-
         const config = {
             'files': {
                 'snarkyjs': 'http://localhost:3000/data/snarkyjs.mjs',
@@ -230,9 +147,6 @@
                 }
             }
         )
-
-
-
 
     </script>
 </body>

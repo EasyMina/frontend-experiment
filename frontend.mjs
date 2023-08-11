@@ -3,8 +3,6 @@ import fs from 'fs'
 import express from 'express'
 
 
-
-
 const Frontend = class Frontend {
     #config
     #state
@@ -187,7 +185,6 @@ const Frontend = class Frontend {
         return result
     }
 }
-
 
 
 const frontend = new Frontend()
