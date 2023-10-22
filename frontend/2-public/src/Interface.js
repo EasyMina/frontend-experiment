@@ -46,8 +46,6 @@ const Interface = class Interface extends EventTarget {
         element.appendChild( tmp )
 
         const tmp2 = document.createElement( 'span' )
-
-
         element.appendChild( tmp2 )
 
         return true
