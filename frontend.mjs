@@ -20,7 +20,7 @@ const Frontend = class Frontend {
                     'path': './frontend/1-webpack/1-build/snarkyjs.mjs',
                 },
                 'index': {
-                    'path': './frontend/2-public/index.html',
+                    'path': './frontend/2-public/index-v2.html',
                 },
                 'loading': {
                     'path': './frontend/2-public/src/Loading.js',
