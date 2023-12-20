@@ -5,81 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Process Interface</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f2f2f2; }
+        .running { background-color: #e6e6e6; }
+        .waiting { background-color: #fff; }
+        .percent { background-color: #66cc66; }
+        button { cursor: not-allowed; }
+        .active button { cursor: pointer; }
+
+
+                 /* Default button style */
+        .button {
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
+            /* Style for inProgress state */
+        .inProgress {
+            background-color: #ffc107; /* Yellow */
+            color: #333;
         }
 
-        th, td {
-            padding: 8px 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
+        .failed {
+            background-color: #dc3545; /* Red */
+            color: white;
         }
 
-        th {
-            background-color: #f2f2f2;
-        }
-
-        .running {
-            background-color: #e6e6e6;
+        .success {
+            background-color: #28a745; /* Green */
+            color: white;
         }
 
         .waiting {
-            background-color: #fff;
+            background-color: #6c757d; /* Gray */
+            color: white;
         }
 
-        .percent {
-            background-color: #66cc66;
-        }
-
-        button {
-            cursor: not-allowed;
-        }
-
-        .active button {
-            cursor: pointer;
-        }
     </style>
+    <script src="./src/UI.js"></script>
+    <script src="./src/Step.js"></script>
 </head>
 <body>
-    <h1>Process Steps</h1>
+    <h1>Mina Browser Interaction</h1>
     <table>
         <tr>
             <th>NAME</th>
-            <th>TYPE</th>
-            <th>STATE</th>
+            <th>STATUS</th>
+            <th>ACTION</th>
         </tr>
-        <tr class="active">
-            <td>Load Module</td>
-            <td>Multiple Files</td>
-            <td><button onclick="startStep(this)">Start</button></td>
+        <tr id="auro" class="active">
+            <td>Auro</td>
+            <td></td>
+            <td>
+                <button class="button inProgress" onclick="step.connectToAuro(this)">Connect</button>
+            </td>
         </tr>
-        <tr>
-            <td>Import Modules</td>
-            <td>Multiple Files</td>
-            <td><button disabled>Waiting</button></td>
+        <tr id="o1js">
+            <td>o1.js</td>
+            <td></td>
+            <td>
+                <button class="button waiting" disabled>Waiting</button>
+            </td>
         </tr>
-        <tr>
+        <tr id="smartContract">
+            <td>Choose Smart Contract</td>
+            <td></td>
+            <td>
+                <button class="button waiting" disabled>Waiting</button>
+            </td>
+        </tr>
+        <tr id="compile">
             <td>Compile</td>
-            <td>Single</td>
-            <td><button disabled>Waiting</button></td>
+            <td></td>
+            <td>
+                <button class="button waiting" disabled>Waiting</button>
+            </td>
         </tr>
     </table>
 
     <script>
-        function startStep(button) {
-            // Disable all buttons
-            document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+    // var ui = new UI()
+    var step = new Step()
+    step.init()
 
-            // Enable the button in the current row
-            const row = button.parentElement.parentElement;
-            row.classList.add('active');
-            button.disabled = false;
-        }
+
+
     </script>
 </body>
 </html>

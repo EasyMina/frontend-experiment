@@ -20,17 +20,25 @@ const Frontend = class Frontend {
                     'path': './frontend/1-webpack/1-build/snarkyjs.mjs',
                 },
                 'index': {
-                    'path': './frontend/2-public/index-v2.html',
+                    'path': './frontend/2-public/index-v3.html',
                 },
+                'step': {
+                    'path': './frontend/2-public/src/Step.js'
+                },
+                'ui': {
+                    'path': './frontend/2-public/src/UI.js'
+                }
+/*
                 'loading': {
                     'path': './frontend/2-public/src/Loading.js',
                 },
                 'interface': {
                     'path': './frontend/2-public/src/Interface.js',
                 }
+*/
             },
             'server': {
-                'port': 3000,
+                'port': 4001,
                 'headers': [
                     [ 'Cross-Origin-Opener-Policy', 'same-origin' ],
                     [ 'Cross-Origin-Embedder-Policy', 'require-corp' ]
@@ -55,6 +63,20 @@ const Frontend = class Frontend {
                         'send': 'preloads__index'
                     },
                     {
+                        'route': '/src/Step.js',
+                        'headers': [ [ 'Content-Type', 'application/javascript' ] ],
+                        'type': '.js',
+                        'send': 'preloads__step'
+                    },
+                    {
+                        'route': '/src/UI.js',
+                        'headers': [ [ 'Content-Type', 'application/javascript' ] ],
+                        'type': '.js',
+                        'send': 'preloads__ui'
+                    }
+
+/*
+                    {
                         'route': '/src/Loading.js',
                         'headers': [ [ 'Content-Type', 'application/javascript' ] ],
                         'type': '.js',
@@ -66,6 +88,7 @@ const Frontend = class Frontend {
                         'type': '.js',
                         'send': 'preloads__interface'
                     }
+*/
                 ]
             }
         }
