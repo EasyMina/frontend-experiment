@@ -42,6 +42,12 @@ const Step = class Step extends EventTarget {
                 'exists': false,
                 'account': null,
                 'network': null
+            },
+            'o1js': {
+                'url': null
+            },
+            'smartContract': {
+                'url': null
             }
         }
 
@@ -71,6 +77,7 @@ const Step = class Step extends EventTarget {
                 break
         }
 
+        this.#updateGlobalVariable()
         return true
     }
 
@@ -117,8 +124,8 @@ const Step = class Step extends EventTarget {
             'rows': [ `Account: ${address}`, `Network: ${this.#state['auro']['network']}`]
         } )
         ui.nextStep()
-        // ui.health()
-        // ui.updateAuro( { message, state: 'success' } )
+
+        return true
     }
 
 
@@ -174,6 +181,7 @@ const Step = class Step extends EventTarget {
         console.log( 'url', url )
 
         o1js = await import( url )
+        this.#state['o1js']['url'] = url
 
         ui.setResponseText( {
             'key': 'o1js',
@@ -186,6 +194,25 @@ const Step = class Step extends EventTarget {
 
 
     async #setSmartContract() {
+
+        return true
+    }
+
+
+    #updateGlobalVariable() {
+        easymina = Object
+            .entries( this.#state )
+            .reduce( ( acc, a, index ) => {
+                const [ key, value ] = a
+                !Object.hasOwn( acc, key ) ? acc[ key ] = {} : ''
+                Object
+                    .entries( value )
+                    .forEach( b => {
+                        const [ k, v ] = b
+                        acc[ key ][ k ] = v
+                    } )
+                return acc
+            }, {} )
 
         return true
     }
