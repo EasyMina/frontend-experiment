@@ -1,78 +1,131 @@
 const UI = class UI extends EventTarget {
     #config
-    state
+    #state
 
 
     constructor() {
         super()
         this.#config = {
-            'auro': {
-                'id': 'auro'
+            'states': {
+                'done': {
+                    'className': 'step done-step',
+                    'circleClassName': 'step-circle done-step',
+                    'selectDisable': true,
+                    'buttonDisable': true
+                },
+                'active': {
+                    'className': 'step active-step',
+                    'circleClassName': 'step-circle done-step',
+                    'selectDisable': false,
+                    'buttonDisable': false
+                },
+                'waiting': {
+                    'className': 'step',
+                    'circleClassName': 'step-circle',
+                    'selectDisable': true,
+                    'buttonDisable': true
+                }
             },
-            'button':{
-                'waiting': 'button waiting',
-                'inProgress': 'button inProgress',
-                'success': 'button success',
-                'failed': 'button failed'
+            'dom': {
+                'auro': {
+                    'select': true
+                },
+                'o1js': {
+                    'select': true
+                },
+                'smartContract': {
+                    'select': true
+                },
+                'compile': {
+                    'select': false
+                }
             }
+        }
+
+        this.#state = {
+            'activeKey': null
         }
     }
 
 
-    updateAuro( { message, state } ) {
-        console.log( 'B', state )
-        const id = this.#config['auro']['id']
-        this.#modifyStatus( { id, message } )
-
-        const text = state
-        this.#modifyButton( { id, state, text } )
-
+    changeStatusRows( { state } ) {
+        console.log( 'disable')
+        Object
+            .keys( this.#config['dom'] )
+            .forEach( key => this.changeStatusRow( { key, state } ) )
 
         return true
     }
 
 
-    health() {
-        console.log( 'UI ready' )
+    changeStatusRow( { key, state } ) {
+        if( state === 'active' ) {
+            this.#state['activeKey'] = key
+        }
+        const element = document.getElementById( key )
+        element.className = this.#config['states'][ state ]['className']
+
+        if( this.#config['dom'][ key ]['select'] ) {
+            const select = document
+                .querySelector( `#${key} select.step-dropdown` )
+            select.disabled = this.#config['states'][ state ]['selectDisable']
+        }
+
+        const button = document
+            .querySelector( `#${key} button.step-button` )
+        button.disabled = this.#config['states'][ state ]['buttonDisable']
+
+        const circle = element.firstElementChild;
+        circle.className = this.#config['states'][ state ]['circleClassName']
+
+        return true
     }
 
 
+    setSelectOptions( { key, options } ) {
+        const select = document
+            .querySelector( `#${key} select.step-dropdown` )
 
-    #modifyStatus( { id, message } ) {
-        const root = document.getElementById( id )
-        if( root ) {
-            const second = root.getElementsByTagName( 'td' )[ 1 ]
-            if( second ) {
-              console.log( second.textContent )
-              second.textContent = message
-            } else {
-              console.error( `Second <td> element not found in the <tr>.` )
-            }
-        } else {
-            console.error( `The <tr> element with id '${id}' was not found.` )
-        }
+        options
+            .forEach( option => {
+                const el = document.createElement( 'option' )
+                el.text = option['text']
+                el.value = option['value']
+                select.appendChild( el )
+            } )
+
+        return true
+    } 
+    
+    
+    getSelectOption( { key } ) {
+        const select = document
+            .querySelector( `#${key} select.step-dropdown` )
+        return select.options[ select.selectedIndex ].value
     }
 
 
-    #modifyButton( { id, state, text } ) {
-        console.log( 'c', state )
-        if( !Object.keys( this.#config['button'] ).includes( state ) ) {
-            console.log( `State with the value '${state}' is not known.` )
-        }
+    next() {
+        const keys = Object
+            .keys( this.#config['dom'] )
+        const index = keys
+            .findIndex( a => a === this.#state['activeKey'] )
 
-        const root = document.getElementById( id )
-        if( root ) {
-            const third = root.getElementsByTagName( 'td' )[ 2 ]
-            if( third ) {
-                console.log( 'HERE ', state )
-                const button = third.querySelector( 'button' )
-                button.className = this.#config['button'][ state ]
-                button.textContent = text
-            } else {
-              console.error( `Third <td> element not found in the <tr>.` )
-            }
+        if( keys.length === index ) {
+            this.changeStatusRow( { 
+                'key': keys[ index ], 
+                'state': 'done'
+            } )
         } else {
-            console.error( `The <tr> element with id '${id}' was not found.` )
+            this.changeStatusRow( { 
+                'key': keys[ index ], 
+                'state': 'done'
+            } )
+
+            this.changeStatusRow( { 
+                'key': keys[ index + 1 ], 
+                'state': 'active'
+            } )
         }
     }
 }

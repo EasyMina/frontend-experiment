@@ -4,31 +4,13 @@ const ui = new UI()
 const Step = class Step extends EventTarget {
     #config
     #state
+    state
 
 
     constructor() {
         super()
         this.#config = {
-            'auro': {
-                'validNetworks': [ 'devnet', 'berkeley', 'testworld2', 'mainnet' ],
-                'options': [
-                    { 'text': 'Berkeley', 'value': 'berkeley' },
-                    { 'text': 'Testworld 2', 'value': 'testworld2' },
-/*
-                    { 'text': 'Mainnet', 'value': 'mainnet' },
-                    { 'text': 'Dev Net', 'value': 'devnet' }
-*/
-                ]
-            },
-            'o1js': {
-
-            },
-            'smartContract': {
-
-            }, 
-            'compile': {
-
-            }
+            'validNetworks': [ 'devnet', 'berkeley', 'testworld2', 'mainnet' ]
         }
     }
 
@@ -42,55 +24,35 @@ const Step = class Step extends EventTarget {
             }
         }
 
-        console.log( 'init' )
-        ui.changeStatusRows( { 'state': 'waiting' } )
-
-        const key = 'auro'
-        ui.setSelectOptions( { key, 'options': this.#config[ key ]['options'] } )
-        ui.changeStatusRow( { 'state': 'active', key } )
-
         return true
     }
 
 
-    async buttonPressed( { key } ) {
-        switch( key ) {
-            case 'auro':
-                await this.#setAuro()
-                break
-            case 'o1js':
-                break
-            case 'smartContract': 
-                break
-            case 'compile':
-                break
-            default:
-                console.log( `Button with the key '${key}' not known.` )
-                break
-        }
-
-        return true
+    getState() {
+        return this.#state
     }
 
 
-    async #setAuro() {
-        const validation = await this.#validateSetAuro()
+    async connectToAuro() {
+        const validation = await this.#validateConnectToAuro()
         const [ messages, comments, accounts, network ] = validation
         this.#printMessages( { messages, comments } )
         this.#state['auro']['exists'] = messages.length === 0 ? true : false
         if( !this.#state['auro']['exists'] ) { 
             console.log( 'AAA' )
-            // !
-
+            ui.updateAuro( { 
+                'message': messages.join( ' ' ), 
+                'state': 'failed' 
+            } )
             return true 
         }
 
         this.#state['auro']['account'] = accounts[ 0 ]
-
-        const targetChain = ui.getSelectOption( { 'key': 'auro' } )
-        if( network['chainId'] !== targetChain ) {
+        if( network['chainId'] !== 'mainnet' ) {
+            const targetChain = 'mainnet'
             await mina.switchChain( { 'chainId': targetChain } )
             const newNetwork = await mina.requestNetwork()
+            console.log( `Change chainId to '${newNetwork['chainId']}'.` )
             this.#state['auro']['network'] = newNetwork['chainId']
         } else {
             this.#state['auro']['network'] = network['chainId']
@@ -98,13 +60,12 @@ const Step = class Step extends EventTarget {
 
         const message = `Account: ${this.#state['auro']['account']}, Network: ${this.#state['auro']['network']}.`
 
-        ui.next()
-        // ui.health()
-        // ui.updateAuro( { message, state: 'success' } )
+        ui.health()
+        ui.updateAuro( { message, state: 'success' } )
     }
 
 
-    async #validateSetAuro() {
+    async #validateConnectToAuro() {
         const messages = []
         const comments = []
         let accounts
@@ -135,12 +96,11 @@ const Step = class Step extends EventTarget {
                 comments.push( `${accounts.length} Account${accounts.length === 0 ? '' : 's' } connected (${accounts.join( ', ' )}).`)
             }
 
-
             if( typeof network !== 'object' ) {
                 messages.push( `Network is not object.` )
             } else if( !network.hasOwnProperty( 'chainId' ) ) {
                 messages.push( `Network has not the key 'chainId'.` ) 
-            } else if( !this.#config['auro']['validNetworks'].includes( network['chainId'] ) ) {
+            } else if( !this.#config['validNetworks'].includes( network['chainId'] ) ) {
                 messages.push( `Network with the value '${network}' is not valid.` )
             } else {
                 comments.push( `Network is set to ${network['chainId']}.` )
