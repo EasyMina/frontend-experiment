@@ -96,6 +96,19 @@ const UI = class UI extends EventTarget {
 
         return true
     } 
+
+
+    setResponseText( { key, rows } ) {
+        const divs = document
+            .querySelectorAll( `#${key} div.step-message` )
+
+        rows
+            .forEach( ( row, index ) => {
+                divs[ index ].textContent = row
+            } )
+
+        return true
+    }
     
     
     getSelectOption( { key } ) {
@@ -105,7 +118,7 @@ const UI = class UI extends EventTarget {
     }
 
 
-    next() {
+    nextStep() {
         const keys = Object
             .keys( this.#config['dom'] )
         const index = keys
@@ -127,5 +140,7 @@ const UI = class UI extends EventTarget {
                 'state': 'active'
             } )
         }
+
+        return true
     }
 }

@@ -21,7 +21,10 @@ const Step = class Step extends EventTarget {
                 ]
             },
             'o1js': {
-
+                'options': [
+                    { 'text': 'CDN', 'value': 'https://cdn.jsdelivr.net/npm/o1js' },
+                    { 'text': 'Local', 'value': './src....' }
+                ]
             },
             'smartContract': {
 
@@ -42,12 +45,9 @@ const Step = class Step extends EventTarget {
             }
         }
 
-        console.log( 'init' )
+        this.#addSelectOptions()
         ui.changeStatusRows( { 'state': 'waiting' } )
-
-        const key = 'auro'
-        ui.setSelectOptions( { key, 'options': this.#config[ key ]['options'] } )
-        ui.changeStatusRow( { 'state': 'active', key } )
+        ui.changeStatusRow( { 'state': 'active', 'key': 'auro' } )
 
         return true
     }
@@ -59,8 +59,10 @@ const Step = class Step extends EventTarget {
                 await this.#setAuro()
                 break
             case 'o1js':
+                await this.#setImport()
                 break
             case 'smartContract': 
+                await this.#setSmartContract()
                 break
             case 'compile':
                 break
@@ -73,15 +75,27 @@ const Step = class Step extends EventTarget {
     }
 
 
+    #addSelectOptions() {
+        ui.setSelectOptions( { 
+            'key': 'auro', 
+            'options': this.#config['auro']['options'] 
+        } )
+
+        ui.setSelectOptions( { 
+            'key': 'o1js', 
+            'options': this.#config['o1js']['options']
+        } )
+    }
+
+
     async #setAuro() {
         const validation = await this.#validateSetAuro()
         const [ messages, comments, accounts, network ] = validation
         this.#printMessages( { messages, comments } )
         this.#state['auro']['exists'] = messages.length === 0 ? true : false
         if( !this.#state['auro']['exists'] ) { 
-            console.log( 'AAA' )
-            // !
-
+            const rows = [ messages.join(', ' ), '' ]
+            ui.setResponseText( { 'key': 'auro', rows } )
             return true 
         }
 
@@ -97,8 +111,12 @@ const Step = class Step extends EventTarget {
         }
 
         const message = `Account: ${this.#state['auro']['account']}, Network: ${this.#state['auro']['network']}.`
-
-        ui.next()
+        const address = `${this.#state['auro']['account'].substring(0, 8)}...${this.#state['auro']['account'].substring( 51, 55 )}`
+        ui.setResponseText( {
+            'key': 'auro',
+            'rows': [ `Account: ${address}`, `Network: ${this.#state['auro']['network']}`]
+        } )
+        ui.nextStep()
         // ui.health()
         // ui.updateAuro( { message, state: 'success' } )
     }
@@ -148,6 +166,28 @@ const Step = class Step extends EventTarget {
        }
 
         return [ messages, comments, accounts, network ]
+    }
+
+
+    async #setImport() {
+        const url = ui.getSelectOption( { 'key': 'o1js' } )
+        console.log( 'url', url )
+
+        o1js = await import( url )
+
+        ui.setResponseText( {
+            'key': 'o1js',
+            'rows': [ `Succesful loaded.` ]
+        } )
+        ui.nextStep()
+
+        return true
+    }
+
+
+    async #setSmartContract() {
+
+        return true
     }
 
 
